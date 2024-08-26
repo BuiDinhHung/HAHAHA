@@ -1,0 +1,133 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+body
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url(img/bg.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.box
+{
+    padding: 20px 30px;
+    width: 60%;
+    height: 80%;
+    backdrop-filter: blur(50px);
+    border-radius: 5px;
+    background: rgba(49, 49, 49, .2);
+    border: 1px solid rgba(255, 255, 255, .5);
+}
+.box .form
+{
+    padding: 10px 20px;
+}
+.box .form h2
+{
+    text-align: center;
+    color: #fff;
+}
+.box .form form
+{
+    margin-top: 50px;
+    align-items: center;
+}
+.box .form form .inputbox input
+{
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    background: none;
+    border-bottom: 1px solid #12151e;
+    margin-bottom: 30px;
+    color: #fff;
+}
+.box .form form .inputbox span
+{
+    position: absolute;
+    transform: translateY(-80px);
+    font-size: 14px;
+    color: #fff;
+}
+.box .form form .sub
+{
+    padding: 10px 20px;
+    color: #fff;
+    border: none;
+    outline: none;
+    background: #0cc0df;
+    cursor: pointer;
+    font-size: 16px;
+}
+/* Basic styling for the table container */
+.box {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling the form */
+.form {
+    font-family: Arial, sans-serif;
+}
+
+/* Styling the table */
+#data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+}
+
+/* Table header styling */
+#data-table thead {
+    background-color: #333;
+    color: white;
+}
+
+#data-table th {
+    padding: 10px;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Table row styling */
+#data-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#data-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Hover effect for rows */
+#data-table tbody tr:hover {
+    background-color: #e0e0e0;
+}
+
+/* Styling for table cells */
+#data-table td, #data-table th {
+    text-align: left;
+    vertical-align: middle;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #data-table {
+        font-size: 14px;
+    }
+
+    #data-table th, #data-table td {
+        padding: 8px;
+    }
+}
