@@ -20,6 +20,7 @@
                 <table id="data-table">
                     <thead>
                         <tr>
+                            <th>STT</th> <!-- Thêm cột STT -->
                             <th>Name</th>
                             <th>IP Address</th>
                             <th>Computer Name</th>
@@ -81,7 +82,7 @@
                 }
                 displayTable(tableData);
             } else {
-                tableBody.innerHTML = '<tr><td colspan="5">No data available</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6">No data available</td></tr>';
             }
 
             // Filter functionality
@@ -106,14 +107,15 @@
             });
         });
 
-        // Function to display table data
+        // Function to display table data with STT
         function displayTable(data) {
             const tableBody = document.querySelector('#data-table tbody');
             tableBody.innerHTML = ''; // Clear the table
             if (data.length > 0) {
-                data.forEach(entry => {
+                data.forEach((entry, index) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
+                        <td>${index + 1}</td> <!-- Số thứ tự (STT) bắt đầu từ 1 -->
                         <td>${entry.hostName}</td>
                         <td>${entry.IPAddress}</td>
                         <td>${entry.computername}</td>
@@ -123,7 +125,7 @@
                     tableBody.appendChild(row);
                 });
             } else {
-                tableBody.innerHTML = '<tr><td colspan="5">No matching data</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6">No matching data</td></tr>';
             }
         }
     </script>
