@@ -12,6 +12,11 @@
         <div class="form">
             <h2>HAHA HAHA HAHA HAHA</h2>
             <form>
+                <label for="filter-ip">Filter by IP:</label>
+                <input type="text" id="filter-ip" placeholder="Enter IP Address">
+
+                <button type="button" id="sort-ip">Sort by IP Address</button>
+
                 <table id="data-table">
                     <thead>
                         <tr>
@@ -34,7 +39,7 @@
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
 
-        // Your web app's Firebase configuration
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCon2VW8eSnddBpsvvwcklKKPiUGM2D8SI",
             authDomain: "get-user-ip.firebaseapp.com",
@@ -51,37 +56,76 @@
         const analytics = getAnalytics(app);
         const database = getDatabase(app);
 
-        // Reference to the database location where your data is stored
-        const dataRef = ref(database, 'idnumber'); // Updated path to match your data structure
+        // Reference to the database
+        const dataRef = ref(database, 'idnumber');
 
-        // Fetch data from Firebase and display it in the table
+        // Fetch and display data
         onValue(dataRef, (snapshot) => {
             const data = snapshot.val();
-            console.log(data); // Check data structure in console
             const tableBody = document.querySelector('#data-table tbody');
+            let tableData = []; // Store all data here for filtering and sorting
             tableBody.innerHTML = ''; // Clear the table before inserting new data
 
             if (data) {
                 for (const key in data) {
                     if (data.hasOwnProperty(key)) {
                         const entry = data[key];
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${entry.hostName || 'N/A'}</td>
-                            <td>${entry.IPAddress || 'N/A'}</td>
-                            <td>${entry.computername || 'N/A'}</td>
-                            <td>${entry.time || 'N/A'}</td>
-                            <td>${entry.userProfile || 'N/A'}</td>
-                        `;
-                        tableBody.appendChild(row);
+                        tableData.push({
+                            hostName: entry.hostName || 'N/A',
+                            IPAddress: entry.IPAddress || 'N/A',
+                            computername: entry.computername || 'N/A',
+                            time: entry.time || 'N/A',
+                            userProfile: entry.userProfile || 'N/A'
+                        });
                     }
                 }
+                displayTable(tableData);
             } else {
-                tableBody.innerHTML = '<tr><td colspan="7">No data available</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="5">No data available</td></tr>';
             }
-        }, {
-            onlyOnce: true
+
+            // Filter functionality
+            const filterInput = document.getElementById('filter-ip');
+            filterInput.addEventListener('input', () => {
+                const filteredData = tableData.filter(row => row.IPAddress.includes(filterInput.value));
+                displayTable(filteredData);
+            });
+
+            // Sort functionality
+            let isSorted = false; // Track sort order
+            const sortButton = document.getElementById('sort-ip');
+            sortButton.addEventListener('click', () => {
+                if (!isSorted) {
+                    tableData.sort((a, b) => a.IPAddress.localeCompare(b.IPAddress));
+                    isSorted = true;
+                } else {
+                    tableData.reverse();
+                    isSorted = false;
+                }
+                displayTable(tableData);
+            });
         });
+
+        // Function to display table data
+        function displayTable(data) {
+            const tableBody = document.querySelector('#data-table tbody');
+            tableBody.innerHTML = ''; // Clear the table
+            if (data.length > 0) {
+                data.forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${entry.hostName}</td>
+                        <td>${entry.IPAddress}</td>
+                        <td>${entry.computername}</td>
+                        <td>${entry.time}</td>
+                        <td>${entry.userProfile}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="5">No matching data</td></tr>';
+            }
+        }
     </script>
 </body>
 </html>
