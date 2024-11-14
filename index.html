@@ -21,7 +21,6 @@
                             <th>STT</th>
                             <th>Name</th>
                             <th>IP Address</th>
-                            <th>Computer Name</th>
                             <th>Time</th>
                             <th>User Profile</th>
                         </tr>
@@ -72,7 +71,6 @@
                         tableData.push({
                             hostName: entry.hostName || 'N/A',
                             IPAddress: entry.IPAddress || 'N/A',
-                            computername: entry.computername || 'N/A',
                             time: entry.time || 'N/A',
                             userProfile: entry.userProfile || 'N/A'
                         });
@@ -111,7 +109,6 @@
                             <span>${entry.IPAddress}</span>
                             <button type="button" onclick="copyToClipboard('${entry.IPAddress}')" title="Copy">Copy</button>
                         </td>
-                        <td>${entry.computername}</td>
                         <td>${entry.time}</td>
                         <td>${entry.userProfile}</td>
                     `;
