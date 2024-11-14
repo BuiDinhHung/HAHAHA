@@ -37,7 +37,7 @@
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
 
         // Firebase configuration
@@ -60,51 +60,61 @@
         // Reference to the database
         const dataRef = ref(database, 'idnumber');
 
-        // Fetch and display data
-        onValue(dataRef, (snapshot) => {
-            const data = snapshot.val();
-            const tableBody = document.querySelector('#data-table tbody');
-            let tableData = []; // Store all data here for filtering and sorting
-            tableBody.innerHTML = ''; // Clear the table before inserting new data
+        let tableData = []; // Store all data here for filtering and sorting
+        let isSorted = false; // Track sort order
 
-            if (data) {
-                for (const key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        const entry = data[key];
-                        tableData.push({
-                            hostName: entry.hostName || 'N/A',
-                            IPAddress: entry.IPAddress || 'N/A',
-                            computername: entry.computername || 'N/A',
-                            time: entry.time || 'N/A',
-                            userProfile: entry.userProfile || 'N/A'
-                        });
+        // Fetch and display data every 1 minute
+        function fetchData() {
+            get(dataRef).then((snapshot) => {
+                const data = snapshot.val();
+                tableData = []; // Clear previous data
+                const tableBody = document.querySelector('#data-table tbody');
+                tableBody.innerHTML = ''; // Clear the table before inserting new data
+
+                if (data) {
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            const entry = data[key];
+                            tableData.push({
+                                hostName: entry.hostName || 'N/A',
+                                IPAddress: entry.IPAddress || 'N/A',
+                                computername: entry.computername || 'N/A',
+                                time: entry.time || 'N/A',
+                                userProfile: entry.userProfile || 'N/A'
+                            });
+                        }
                     }
-                }
-                displayTable(tableData);
-            } else {
-                tableBody.innerHTML = '<tr><td colspan="6">No data available</td></tr>';
-            }
-
-            // Filter functionality
-            const filterInput = document.getElementById('filter-ip');
-            filterInput.addEventListener('input', () => {
-                const filteredData = tableData.filter(row => row.IPAddress.includes(filterInput.value));
-                displayTable(filteredData); // Update table with filtered data
-            });
-
-            // Sort functionality
-            let isSorted = false; // Track sort order
-            const sortButton = document.getElementById('sort-ip');
-            sortButton.addEventListener('click', () => {
-                if (!isSorted) {
-                    tableData.sort((a, b) => a.IPAddress.localeCompare(b.IPAddress));
-                    isSorted = true;
+                    displayTable(tableData);
                 } else {
-                    tableData.reverse();
-                    isSorted = false;
+                    tableBody.innerHTML = '<tr><td colspan="6">No data available</td></tr>';
                 }
-                displayTable(tableData);
+            }).catch((error) => {
+                console.error("Error fetching data:", error);
             });
+        }
+
+        // Run fetchData every 1 minute (60000 milliseconds)
+        setInterval(fetchData, 60000);
+        fetchData(); // Initial call to populate data when page loads
+
+        // Filter functionality
+        const filterInput = document.getElementById('filter-ip');
+        filterInput.addEventListener('input', () => {
+            const filteredData = tableData.filter(row => row.IPAddress.includes(filterInput.value));
+            displayTable(filteredData);
+        });
+
+        // Sort functionality
+        const sortButton = document.getElementById('sort-ip');
+        sortButton.addEventListener('click', () => {
+            if (!isSorted) {
+                tableData.sort((a, b) => a.IPAddress.localeCompare(b.IPAddress));
+                isSorted = true;
+            } else {
+                tableData.reverse();
+                isSorted = false;
+            }
+            displayTable(tableData);
         });
 
         // Function to display table data with STT and Copy functionality only for IP Address column
