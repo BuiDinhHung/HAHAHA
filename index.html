@@ -62,15 +62,13 @@
 
         let tableData = []; // Store all data here for filtering and sorting
         let isSorted = false; // Track sort order
+        let currentFilter = ''; // Store current filter input
 
         // Fetch and display data every 1 minute
         function fetchData() {
             get(dataRef).then((snapshot) => {
                 const data = snapshot.val();
                 tableData = []; // Clear previous data
-                const tableBody = document.querySelector('#data-table tbody');
-                tableBody.innerHTML = ''; // Clear the table before inserting new data
-
                 if (data) {
                     for (const key in data) {
                         if (data.hasOwnProperty(key)) {
@@ -84,9 +82,9 @@
                             });
                         }
                     }
-                    displayTable(tableData);
+                    applyFilterAndDisplayTable(); // Apply filter and display the table
                 } else {
-                    tableBody.innerHTML = '<tr><td colspan="6">No data available</td></tr>';
+                    document.querySelector('#data-table tbody').innerHTML = '<tr><td colspan="6">No data available</td></tr>';
                 }
             }).catch((error) => {
                 console.error("Error fetching data:", error);
@@ -97,11 +95,17 @@
         setInterval(fetchData, 60000);
         fetchData(); // Initial call to populate data when page loads
 
+        // Apply filter and display table data
+        function applyFilterAndDisplayTable() {
+            const filteredData = currentFilter ? tableData.filter(row => row.IPAddress.includes(currentFilter)) : tableData;
+            displayTable(filteredData);
+        }
+
         // Filter functionality
         const filterInput = document.getElementById('filter-ip');
         filterInput.addEventListener('input', () => {
-            const filteredData = tableData.filter(row => row.IPAddress.includes(filterInput.value));
-            displayTable(filteredData);
+            currentFilter = filterInput.value;
+            applyFilterAndDisplayTable();
         });
 
         // Sort functionality
@@ -114,7 +118,7 @@
                 tableData.reverse();
                 isSorted = false;
             }
-            displayTable(tableData);
+            applyFilterAndDisplayTable();
         });
 
         // Function to display table data with STT and Copy functionality only for IP Address column
