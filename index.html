@@ -15,8 +15,6 @@
                 <label for="filter-ip">Filter by IP:</label>
                 <input type="text" id="filter-ip" placeholder="Enter IP Address">
 
-                <button type="button" id="sort-ip">Sort by IP Address</button>
-
                 <table id="data-table">
                     <thead>
                         <tr>
@@ -60,8 +58,7 @@
         // Reference to the database
         const dataRef = ref(database, 'idnumber');
 
-        let tableData = []; // Store all data here for filtering and sorting
-        let isSorted = false; // Track sort order
+        let tableData = []; // Store all data here for filtering
         let currentFilter = ''; // Store current filter input
 
         // Real-time data listener
@@ -97,19 +94,6 @@
         const filterInput = document.getElementById('filter-ip');
         filterInput.addEventListener('input', () => {
             currentFilter = filterInput.value;
-            applyFilterAndDisplayTable();
-        });
-
-        // Sort functionality
-        const sortButton = document.getElementById('sort-ip');
-        sortButton.addEventListener('click', () => {
-            if (!isSorted) {
-                tableData.sort((a, b) => a.IPAddress.localeCompare(b.IPAddress));
-                isSorted = true;
-            } else {
-                tableData.reverse();
-                isSorted = false;
-            }
             applyFilterAndDisplayTable();
         });
 
