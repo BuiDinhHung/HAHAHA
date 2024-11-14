@@ -89,7 +89,7 @@
             const filterInput = document.getElementById('filter-ip');
             filterInput.addEventListener('input', () => {
                 const filteredData = tableData.filter(row => row.IPAddress.includes(filterInput.value));
-                displayTable(filteredData);
+                displayTable(filteredData); // Update table with filtered data
             });
 
             // Sort functionality
