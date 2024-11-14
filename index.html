@@ -37,7 +37,7 @@
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
 
         // Firebase configuration
@@ -64,36 +64,28 @@
         let isSorted = false; // Track sort order
         let currentFilter = ''; // Store current filter input
 
-        // Fetch and display data every 1 minute
-        function fetchData() {
-            get(dataRef).then((snapshot) => {
-                const data = snapshot.val();
-                tableData = []; // Clear previous data
-                if (data) {
-                    for (const key in data) {
-                        if (data.hasOwnProperty(key)) {
-                            const entry = data[key];
-                            tableData.push({
-                                hostName: entry.hostName || 'N/A',
-                                IPAddress: entry.IPAddress || 'N/A',
-                                computername: entry.computername || 'N/A',
-                                time: entry.time || 'N/A',
-                                userProfile: entry.userProfile || 'N/A'
-                            });
-                        }
+        // Real-time data listener
+        onValue(dataRef, (snapshot) => {
+            const data = snapshot.val();
+            tableData = []; // Clear previous data
+            if (data) {
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        const entry = data[key];
+                        tableData.push({
+                            hostName: entry.hostName || 'N/A',
+                            IPAddress: entry.IPAddress || 'N/A',
+                            computername: entry.computername || 'N/A',
+                            time: entry.time || 'N/A',
+                            userProfile: entry.userProfile || 'N/A'
+                        });
                     }
-                    applyFilterAndDisplayTable(); // Apply filter and display the table
-                } else {
-                    document.querySelector('#data-table tbody').innerHTML = '<tr><td colspan="6">No data available</td></tr>';
                 }
-            }).catch((error) => {
-                console.error("Error fetching data:", error);
-            });
-        }
-
-        // Run fetchData every 1 minute (60000 milliseconds)
-        setInterval(fetchData, 60000);
-        fetchData(); // Initial call to populate data when page loads
+                applyFilterAndDisplayTable(); // Apply filter and display the table
+            } else {
+                document.querySelector('#data-table tbody').innerHTML = '<tr><td colspan="6">No data available</td></tr>';
+            }
+        });
 
         // Apply filter and display table data
         function applyFilterAndDisplayTable() {
