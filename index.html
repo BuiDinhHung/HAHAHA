@@ -20,7 +20,7 @@
                 <table id="data-table">
                     <thead>
                         <tr>
-                            <th>STT</th> <!-- Thêm cột STT -->
+                            <th>STT</th>
                             <th>Name</th>
                             <th>IP Address</th>
                             <th>Computer Name</th>
@@ -107,7 +107,7 @@
             });
         });
 
-        // Function to display table data with STT
+        // Function to display table data with STT and Copy functionality only for IP Address column
         function displayTable(data) {
             const tableBody = document.querySelector('#data-table tbody');
             tableBody.innerHTML = ''; // Clear the table
@@ -115,9 +115,12 @@
                 data.forEach((entry, index) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${index + 1}</td> <!-- Số thứ tự (STT) bắt đầu từ 1 -->
+                        <td>${index + 1}</td>
                         <td>${entry.hostName}</td>
-                        <td>${entry.IPAddress}</td>
+                        <td>
+                            <span>${entry.IPAddress}</span>
+                            <button onclick="copyToClipboard('${entry.IPAddress}')" title="Copy">Copy</button>
+                        </td>
                         <td>${entry.computername}</td>
                         <td>${entry.time}</td>
                         <td>${entry.userProfile}</td>
@@ -128,6 +131,15 @@
                 tableBody.innerHTML = '<tr><td colspan="6">No matching data</td></tr>';
             }
         }
+
+        // Copy to clipboard function
+        window.copyToClipboard = function(value) {
+            navigator.clipboard.writeText(value).then(() => {
+                alert('Copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        };
     </script>
 </body>
 </html>
