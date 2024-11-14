@@ -119,7 +119,7 @@
                         <td>${entry.hostName}</td>
                         <td>
                             <span>${entry.IPAddress}</span>
-                            <button onclick="copyToClipboard('${entry.IPAddress}')" title="Copy">Copy</button>
+                            <button type="button" onclick="copyToClipboard('${entry.IPAddress}')" title="Copy">Copy</button>
                         </td>
                         <td>${entry.computername}</td>
                         <td>${entry.time}</td>
@@ -132,7 +132,7 @@
             }
         }
 
-        // Copy to clipboard function without alert
+        // Copy to clipboard function without alert or page reload
         window.copyToClipboard = function(value) {
             navigator.clipboard.writeText(value).catch(err => {
                 console.error('Failed to copy text: ', err);
