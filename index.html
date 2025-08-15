@@ -1,130 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='shortcut icon' href='favicon.ico' />
-    <title>Report Unsafe Website</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <title>CHECK LIST IP</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="box">
-        <div class="form">
-            <h2>CHECK LIST IP</h2>
-            <form>
-                <label for="filter-ip">Filter by IP:</label>
-                <input type="text" id="filter-ip" placeholder="Enter IP Address">
-
-                <table id="data-table">
-                    <thead>
-                        <tr>
-                            <th>STT</th>
-                            <th>Name</th>
-                            <th>IP Address</th>
-                            <th>Time</th>
-                            <th>User Profile</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data rows will be inserted here -->
-                    </tbody>
-                </table>
-            </form>
-        </div>
+  <div class="box">
+    <div class="form">
+      <h2>CHECK LIST IP</h2>
+      <form>
+        <label for="filter-ip">Filter by IP:</label>
+        <input type="text" id="filter-ip" placeholder="Enter IP Address" />
+        <table id="data-table">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Name</th>
+              <th>IP Address</th>
+              <th>Time</th>
+              <th>User Profile</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data rows will be inserted here -->
+          </tbody>
+        </table>
+      </form>
     </div>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
+  </div>
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCon2VW8eSnddBpsvvwcklKKPiUGM2D8SI",
-            authDomain: "get-user-ip.firebaseapp.com",
-            databaseURL: "https://get-user-ip-default-rtdb.firebaseio.com",
-            projectId: "get-user-ip",
-            storageBucket: "get-user-ip.appspot.com",
-            messagingSenderId: "225384730787",
-            appId: "1:225384730787:web:d4f619fa7fe2f8d0f16f16",
-            measurementId: "G-LRF0B51SC0"
-        };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const database = getDatabase(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyCon2VW8eSnddBpsvvwcklKKPiUGM2D8SI",
+      authDomain: "get-user-ip.firebaseapp.com",
+      databaseURL: "https://get-user-ip-default-rtdb.firebaseio.com",
+      projectId: "get-user-ip",
+      storageBucket: "get-user-ip.appspot.com",
+      messagingSenderId: "225384730787",
+      appId: "1:225384730787:web:d4f619fa7fe2f8d0f16f16",
+      measurementId: "G-LRF0B51SC0"
+    };
 
-        // Reference to the database
-        const dataRef = ref(database, 'idnumber');
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const dataRef = ref(database, 'idnumber');
 
-        let tableData = []; // Store all data here for filtering
-        let currentFilter = ''; // Store current filter input
+    let tableData = [];
+    let currentFilter = '';
 
-        // Real-time data listener
-        onValue(dataRef, (snapshot) => {
-            const data = snapshot.val();
-            tableData = []; // Clear previous data
-            if (data) {
-                for (const key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        const entry = data[key];
-                        tableData.push({
-                            hostName: entry.hostName || 'N/A',
-                            IPAddress: entry.IPAddress || 'N/A',
-                            time: entry.time || 'N/A',
-                            userProfile: entry.userProfile || 'N/A'
-                        });
-                    }
-                }
-                applyFilterAndDisplayTable(); // Apply filter and display the table
-            } else {
-                document.querySelector('#data-table tbody').innerHTML = '<tr><td colspan="6">No data available</td></tr>';
-            }
-        });
+    function parseFlexibleDate(dateStr) {
+      try {
+        let cleanStr = dateStr.trim()
+          .replace(" SA", " AM")
+          .replace(" CH", " PM");
 
-        // Apply filter and display table data
-        function applyFilterAndDisplayTable() {
-            const filteredData = currentFilter ? tableData.filter(row => row.IPAddress.includes(currentFilter)) : tableData;
-            displayTable(filteredData);
+        // DD-MMM-YY format
+        if (cleanStr.includes("-")) {
+          const [datePart, timePart, meridian] = cleanStr.split(" ");
+          const [day, monthText, yearShort] = datePart.split("-");
+          const year = "20" + yearShort;
+          return new Date(`${monthText} ${day}, ${year} ${timePart} ${meridian || ''}`);
         }
 
-        // Filter functionality
-        const filterInput = document.getElementById('filter-ip');
-        filterInput.addEventListener('input', () => {
-            currentFilter = filterInput.value;
-            applyFilterAndDisplayTable();
-        });
+        // DD/MM/YYYY or MM/DD/YYYY
+        const [datePart, timePart, meridian] = cleanStr.split(" ");
+        const dateSegments = datePart.split("/");
 
-        // Function to display table data with STT and Copy functionality only for IP Address column
-        function displayTable(data) {
-            const tableBody = document.querySelector('#data-table tbody');
-            tableBody.innerHTML = ''; // Clear the table
-            if (data.length > 0) {
-                data.forEach((entry, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${entry.hostName}</td>
-                        <td>
-                            <span>${entry.IPAddress}</span>
-                            <button type="button" onclick="copyToClipboard('${entry.IPAddress}')" title="Copy">Copy</button>
-                        </td>
-                        <td>${entry.time}</td>
-                        <td>${entry.userProfile}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            } else {
-                tableBody.innerHTML = '<tr><td colspan="6">No matching data</td></tr>';
-            }
+        let day, month, year;
+        if (parseInt(dateSegments[0]) > 12) {
+          day = dateSegments[0];
+          month = dateSegments[1];
+          year = dateSegments[2];
+        } else {
+          month = dateSegments[0];
+          day = dateSegments[1];
+          year = dateSegments[2];
         }
 
-        // Copy to clipboard function without alert or page reload
-        window.copyToClipboard = function(value) {
-            navigator.clipboard.writeText(value).catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
-        };
-    </script>
+        return new Date(`${month}/${day}/${year} ${timePart} ${meridian || ''}`);
+      } catch (e) {
+        return new Date(dateStr.replace(" ", "T"));
+      }
+    }
+
+    onValue(dataRef, (snapshot) => {
+      const data = snapshot.val();
+      tableData = [];
+      const now = new Date();
+
+      if (data) {
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            const entry = data[key];
+            if (!entry.time) continue;
+
+            const lastUpdate = parseFlexibleDate(entry.time);
+            const diffSeconds = (now - lastUpdate) / 1000;
+
+            if (diffSeconds <= 30) {
+              tableData.push({
+                hostName: entry.hostName || 'N/A',
+                IPAddress: entry.IPAddress || 'N/A',
+                time: entry.time || 'N/A',
+                userProfile: entry.userProfile || 'N/A'
+              });
+            }
+          }
+        }
+      }
+      applyFilterAndDisplayTable();
+    });
+
+    function applyFilterAndDisplayTable() {
+      const filteredData = currentFilter
+        ? tableData.filter(row => row.IPAddress.includes(currentFilter))
+        : tableData;
+      displayTable(filteredData);
+    }
+
+    const filterInput = document.getElementById('filter-ip');
+    filterInput.addEventListener('input', () => {
+      currentFilter = filterInput.value;
+      applyFilterAndDisplayTable();
+    });
+
+    function displayTable(data) {
+      const tableBody = document.querySelector('#data-table tbody');
+      tableBody.innerHTML = '';
+      if (data.length > 0) {
+        data.forEach((entry, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${entry.hostName}</td>
+            <td>
+              <span>${entry.IPAddress}</span>
+              <button type="button" onclick="copyToClipboard('${entry.IPAddress}')">Copy</button>
+            </td>
+            <td>${entry.time}</td>
+            <td>${entry.userProfile.split("\\").pop()}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      } else {
+        tableBody.innerHTML = '<tr><td colspan="5">No active machines</td></tr>';
+      }
+    }
+
+    window.copyToClipboard = function(value) {
+      navigator.clipboard.writeText(value).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    };
+  </script>
 </body>
 </html>
