@@ -1,180 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="shortcut icon" href="favicon.ico" />
-  <title>ORT</title>
-    <link rel="stylesheet" href="style.css" /> 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <title>ORT</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="box">
-    <div class="form">
-      <h2>HIHIHI</h2>
-      <form>
-        <label for="filter-ip">Filter by IP:</label>
-        <input type="text" id="filter-ip" placeholder="Enter IP Address" />
-        <table id="data-table">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>Name</th>
-              <th>IP Address</th>
-              <th>Time</th>
-              <th>User Profile</th>
-            </tr>
-          </thead>
-          <tbody>
-                      </tbody>
-        </table>
-      </form>
-    </div>
-  </div>
+  <div class="header-title">
+        <h2>HIHIHI</h2> 
+    </div>
+  <div class="box">
+    <div class="form">
+      <form>
+        <label for="filter-ip">Filter by IP:</label>
+        <input type="text" id="filter-ip" placeholder="Enter IP Address" />
+        <table id="data-table">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Name</th>
+              <th>IP Address</th>
+              <th>Time</th>
+              <th>User Profile</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data rows will be inserted here -->
+          </tbody>
+        </table>
+      </form>
+    </div>
+  </div>
 
-  <script type="module">
-    // Nhập các module Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-    // Cấu hình Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCon2VW8eSnddBpsvvwcklKKPiUGM2D8SI",
-      authDomain: "get-user-ip.firebaseapp.com",
-      databaseURL: "https://get-user-ip-default-rtdb.firebaseio.com",
-      projectId: "get-user-ip",
-      storageBucket: "get-user-ip.appspot.com",
-      messagingSenderId: "225384730787",
-      appId: "1:225384730787:web:d4f619fa7fe2f8d0f16f16",
-      measurementId: "G-LRF0B51SC0"
-    };
+    const firebaseConfig = {
+      apiKey: "AIzaSyCon2VW8eSnddBpsvvwcklKKPiUGM2D8SI",
+      authDomain: "get-user-ip.firebaseapp.com",
+      databaseURL: "https://get-user-ip-default-rtdb.firebaseio.com",
+      projectId: "get-user-ip",
+      storageBucket: "get-user-ip.appspot.com",
+      messagingSenderId: "225384730787",
+      appId: "1:225384730787:web:d4f619fa7fe2f8d0f16f16",
+      measurementId: "G-LRF0B51SC0"
+    };
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    const dataRef = ref(database, 'idnumber');
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const dataRef = ref(database, 'idnumber');
 
-    let tableData = [];
-    let currentFilter = '';
+    let tableData = [];
+    let currentFilter = '';
 
-    // Hàm phân tích cú pháp ngày giờ linh hoạt (giữ nguyên)
-    function parseFlexibleDate(dateStr) {
-      try {
-        let cleanStr = dateStr.trim()
-          .replace(" SA", " AM")
-          .replace(" CH", " PM");
+    function parseFlexibleDate(dateStr) {
+      try {
+        let cleanStr = dateStr.trim()
+          .replace(" SA", " AM")
+          .replace(" CH", " PM");
 
-        // DD-MMM-YY format
-        if (cleanStr.includes("-")) {
-          const [datePart, timePart, meridian] = cleanStr.split(" ");
-          const [day, monthText, yearShort] = datePart.split("-");
-          const year = "20" + yearShort;
-          return new Date(`${monthText} ${day}, ${year} ${timePart} ${meridian || ''}`);
-        }
+        // DD-MMM-YY format
+        if (cleanStr.includes("-")) {
+          const [datePart, timePart, meridian] = cleanStr.split(" ");
+          const [day, monthText, yearShort] = datePart.split("-");
+          const year = "20" + yearShort;
+          return new Date(`${monthText} ${day}, ${year} ${timePart} ${meridian || ''}`);
+        }
 
-        // DD/MM/YYYY or MM/DD/YYYY
-        const [datePart, timePart, meridian] = cleanStr.split(" ");
-        const dateSegments = datePart.split("/");
+        // DD/MM/YYYY or MM/DD/YYYY
+        const [datePart, timePart, meridian] = cleanStr.split(" ");
+        const dateSegments = datePart.split("/");
 
-        let day, month, year;
-        if (parseInt(dateSegments[0]) > 12) {
-          day = dateSegments[0];
-          month = dateSegments[1];
-          year = dateSegments[2];
-        } else {
-          month = dateSegments[0];
-          day = dateSegments[1];
-          year = dateSegments[2];
-        }
+        let day, month, year;
+        if (parseInt(dateSegments[0]) > 12) {
+          day = dateSegments[0];
+          month = dateSegments[1];
+          year = dateSegments[2];
+        } else {
+          month = dateSegments[0];
+          day = dateSegments[1];
+          year = dateSegments[2];
+        }
 
-        return new Date(`${month}/${day}/${year} ${timePart} ${meridian || ''}`);
-      } catch (e) {
-        return new Date(dateStr.replace(" ", "T"));
-      }
-    }
+        return new Date(`${month}/${day}/${year} ${timePart} ${meridian || ''}`);
+      } catch (e) {
+        return new Date(dateStr.replace(" ", "T"));
+      }
+    }
 
-    // Lắng nghe dữ liệu từ Firebase
-    onValue(dataRef, (snapshot) => {
-      const data = snapshot.val();
-      tableData = [];
-      const now = new Date();
+    onValue(dataRef, (snapshot) => {
+      const data = snapshot.val();
+      tableData = [];
+      const now = new Date();
 
-      if (data) {
-        for (const key in data) {
-          if (data.hasOwnProperty(key)) {
-            const entry = data[key];
-            if (!entry.time) continue;
+      if (data) {
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            const entry = data[key];
+            if (!entry.time) continue;
 
-            const lastUpdate = parseFlexibleDate(entry.time);
-            // Lọc chỉ lấy các bản ghi cập nhật trong 30 giây gần nhất
-            const diffSeconds = (now - lastUpdate) / 1000;
+            const lastUpdate = parseFlexibleDate(entry.time);
+            const diffSeconds = (now - lastUpdate) / 1000;
 
-            if (diffSeconds <= 30) {
-              tableData.push({
-                hostName: entry.hostName || 'N/A',
-                IPAddress: entry.IPAddress || 'N/A',
-                time: entry.time || 'N/A',
-                userProfile: entry.userProfile || 'N/A'
-              });
-            }
-          }
-        }
-      }
-      applyFilterAndDisplayTable();
-    });
+            if (diffSeconds <= 30) {
+              tableData.push({
+                hostName: entry.hostName || 'N/A',
+                IPAddress: entry.IPAddress || 'N/A',
+                time: entry.time || 'N/A',
+                userProfile: entry.userProfile || 'N/A'
+              });
+            }
+          }
+        }
+      }
+      applyFilterAndDisplayTable();
+    });
 
-    function applyFilterAndDisplayTable() {
-      const filteredData = currentFilter
-        ? tableData.filter(row => row.IPAddress.includes(currentFilter))
-        : tableData;
-      displayTable(filteredData);
-    }
+    function applyFilterAndDisplayTable() {
+      const filteredData = currentFilter
+        ? tableData.filter(row => row.IPAddress.includes(currentFilter))
+        : tableData;
+      displayTable(filteredData);
+    }
 
-    const filterInput = document.getElementById('filter-ip');
-    filterInput.addEventListener('input', () => {
-      currentFilter = filterInput.value;
-      applyFilterAndDisplayTable();
-    });
+    const filterInput = document.getElementById('filter-ip');
+    filterInput.addEventListener('input', () => {
+      currentFilter = filterInput.value;
+      applyFilterAndDisplayTable();
+    });
 
-    // *** HÀM DISPLAYTABLE ĐÃ SỬA LỖI NHẤP NHÁY ***
-    function displayTable(data) {
-      const tableBody = document.querySelector('#data-table tbody');
-      // 1. Tạo một Document Fragment (thùng chứa ngoài màn hình)
-      const fragment = document.createDocumentFragment();
+    function displayTable(data) {
+      const tableBody = document.querySelector('#data-table tbody');
+      tableBody.innerHTML = '';
+      if (data.length > 0) {
+        data.forEach((entry, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${entry.hostName}</td>
+            <td>
+              <span>${entry.IPAddress}</span>
+              <button type="button" onclick="copyToClipboard('${entry.IPAddress}')">Copy</button>
+            </td>
+            <td>${entry.time}</td>
+            <td>${entry.userProfile.split("\\").pop()}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      } else {
+        tableBody.innerHTML = '<tr><td colspan="5">No active machines</td></tr>';
+      }
+    }
 
-      if (data.length > 0) {
-        data.forEach((entry, index) => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${entry.hostName}</td>
-            <td>
-              <span>${entry.IPAddress}</span>
-              <button type="button" onclick="copyToClipboard('${entry.IPAddress}')">Copy</button>
-            </td>
-            <td>${entry.time}</td>
-              <td>${entry.userProfile.split("\\").pop()}</td>
-          `;
-          // Thêm hàng vào Fragment
-          fragment.appendChild(row);
-        });
-      } else {
-        const row = document.createElement('tr');
-        row.innerHTML = '<td colspan="5">No active machines</td>';
-        fragment.appendChild(row);
-      }
-      
-      // 2. Xóa nội dung cũ chỉ MỘT LẦN
-      tableBody.innerHTML = '';
-      
-      // 3. Chèn toàn bộ nội dung mới (từ fragment) vào bảng chỉ MỘT LẦN
-      tableBody.appendChild(fragment);
-    }
-
-    // Hàm copyToClipboard (cần được định nghĩa là global)
-    window.copyToClipboard = function(value) {
-      navigator.clipboard.writeText(value).catch(err => {
-        console.error('Failed to copy text: ', err);
-      });
-    };
-  </script>
+    window.copyToClipboard = function(value) {
+      navigator.clipboard.writeText(value).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    };
+  </script>
 </body>
 </html>
