@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 body {
     background: url('img/bg.jpg') no-repeat center center fixed;
     background-size: cover;
@@ -81,90 +81,4 @@ button.copy-btn {
 .table thead.sticky-top {
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(6px);
-=======
-body {
-    background: url('img/bg.jpg') no-repeat center center fixed;
-    background-size: cover;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 100px;
-
-}
-
-
-.form-label {
-    color: #130505;
-}
-
-.form-control {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #7d7676;
-}
-
-.form-control::placeholder {
-    color: #3b3030;
-}
-
-.table-responsive {
-    max-height: 600px;
-    overflow-y: auto;
-}
-
-table {
-    color: #fff !important;
-    border-collapse: collapse;
-    background-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-thead {
-    background-color: rgba(0, 0, 0, 0.6) !important;
-}
-
-tbody tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-}
-
-tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.18) !important;
-    transition: background 0.2s ease;
-}
-
-button.copy-btn {
-    padding: 3px 8px;
-    font-size: 12px;
-}
-
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-.table-container {
-    position: relative;
-    z-index: 1;
-}
-
-.dropdown-menu {
-    position: absolute !important;
-    z-index: 1055 !important;
-
-}
-
-.table thead.sticky-top {
-    z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(6px);
->>>>>>> 2a2fc64 (Tách firebase-config.js và ẩn khỏi GitHub)
-}
+    backdrop-filter: blur(6px);}
