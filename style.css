@@ -1,208 +1,84 @@
-*
-{
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-    box-sizing: border-box;
-}
-body
-{
+body {
+    background: url('img/bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: url(img/bg.jpg);
-    background-size: cover;
-    background-repeat: no-repeat;
-}
-.box
-{
-    padding: 20px 10px;
-    width: 60%;
-    height: 80%;
-    backdrop-filter: blur(20px);
-    border-radius: 5px;
-    background: rgba(49, 49, 49, .2);
-    border: 1px solid rgba(255, 255, 255, .5);
-}
-.box .form
-{
-    padding: 10px 20px;
-}
-.box .form h2
-{
-    text-align: center;
-    color: #fff;
-}
-.box .form form
-{
-    margin-top: 50px;
-    align-items: center;
-}
-.box .form form .inputbox input
-{
-    padding: 10px 20px;
-    border: none;
-    outline: none;
-    background: none;
-    border-bottom: 1px solid #12151e;
-    margin-bottom: 30px;
-    color: #fff;
-}
-.box .form form .inputbox span
-{
-    position: absolute;
-    transform: translateY(-80px);
-    font-size: 14px;
-    color: #fff;
-}
-.box .form form .sub
-{
-    padding: 10px 20px;
-    color: #fff;
-    border: none;
-    outline: none;
-    background: #0cc0df;
-    cursor: pointer;
-    font-size: 16px;
-}
-/* Basic styling for the table container */
-.box {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    align-items: flex-start;
+    padding-top: 100px;
+
 }
 
-/* Styling the form */
-.form {
-    font-family: Arial, sans-serif;
+
+.form-label {
+    color: #130505;
 }
 
-/* Styling the table */
-#data-table {
-    width: 100%;
+.form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #7d7676;
+}
+
+.form-control::placeholder {
+    color: #3b3030;
+}
+
+.table-responsive {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+table {
+    color: #fff !important;
     border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 16px;
-    text-align: left;
+    background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
-/* Table header styling */
-#data-table thead {
-    background-color: #333;
-    color: white;
+thead {
+    background-color: rgba(0, 0, 0, 0.6) !important;
 }
 
-#data-table th {
-    padding: 10px;
-    border-bottom: 2px solid #ddd;
+tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Table row styling */
-#data-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.18) !important;
+    transition: background 0.2s ease;
 }
 
-#data-table td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+button.copy-btn {
+    padding: 3px 8px;
+    font-size: 12px;
 }
 
-/* Hover effect for rows */
-#data-table tbody tr:hover {
-    background-color: #e0e0e0;
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-/* Styling for table cells */
-#data-table td, #data-table th {
-    text-align: left;
-    vertical-align: middle;
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    #data-table {
-        font-size: 14px;
-    }
-
-    #data-table th, #data-table td {
-        padding: 8px;
-    }
-}
-/* ==================================== */
-/* Cố định chiều cao và bật Scroll cho bảng */
-/* ==================================== */
-
-#data-table {
-    /* Đảm bảo bảng có chiều rộng cố định */
-    width: 100%;
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
 
-#data-table thead,
-#data-table tbody tr {
-    /* Quan trọng: đặt display block cho thead và tr để chiều rộng hoạt động */
-    display: table;
-    width: 100%;
-    table-layout: fixed; /* Giúp các cột có chiều rộng đồng nhất */
+.table-container {
+    position: relative;
+    z-index: 1;
 }
 
-#data-table tbody {
-    /* Cố định chiều cao của thân bảng */
-    height: 600px; /* Đặt chiều cao mong muốn (ví dụ: 400px) */
-    overflow-y: auto; /* Bật cuộn dọc khi nội dung tràn ra */
-    display: block;
+.dropdown-menu {
+    position: absolute !important;
+    z-index: 1055 !important;
+
 }
 
-/* Điều chỉnh lại chiều rộng các cột (rất quan trọng) */
-/* Bạn phải đặt chiều rộng cố định cho từng cột trong th và td */
-#data-table th:nth-child(1),
-#data-table td:nth-child(1) {
-    width: 5%; /* STT */
-}
-
-#data-table th:nth-child(2),
-#data-table td:nth-child(2) {
-    width: 25%; /* Name */
-}
-
-#data-table th:nth-child(3),
-#data-table td:nth-child(3) {
-    width: 25%; /* IP Address */
-}
-
-#data-table th:nth-child(4),
-#data-table td:nth-child(4) {
-    width: 25%; /* Time */
-}
-
-#data-table th:nth-child(5),
-#data-table td:nth-child(5) {
-    width: 20%; /* User Profile */
-}
-/* ==================================== */
-/* Định vị tiêu đề HIHIHI ra vị trí bôi đỏ */
-/* ==================================== */
-
-/* Cần đảm bảo body là đối tượng tham chiếu cho absolute */
-body {
-    position: relative; 
-}
-
-.header-title {
-    /* Đặt tiêu đề lên trên nội dung chính */
-    position: absolute;
-    /* Căn giữa theo chiều ngang */
-    left: 50%;
-    transform: translateX(-50%);
-    /* Đặt ở vị trí cao hơn Box, điều chỉnh giá trị top này */
-    top: 50px; 
-    
-    /* Thiết lập kiểu dáng cho tiêu đề */
-  
-    font-size: 24px;
-    font-weight: bold;
-    padding: 5px 20px;
-    z-index: 10; /* Đảm bảo nó nằm trên mọi thứ */
+.table thead.sticky-top {
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
 }
