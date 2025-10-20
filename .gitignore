@@ -1,0 +1,8 @@
+# Bỏ qua file Firebase config
+js/config.js
+
+# Các file tạm / hệ thống
+node_modules/
+.DS_Store
+.env
+
