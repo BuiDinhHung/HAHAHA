@@ -1,20 +1,18 @@
-// js/main.js
+
 import { firebaseConfig } from "./config.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-// ======== Firebase setup ==========
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const dataRef = ref(database, "idnumber");
 
-// ======== Biến toàn cục ==========
 let tableData = [];
 let currentRegion = "tatca";
 let currentIPFilter = "";
 let currentProfileFilter = "";
 
-// ======== Hàm parse thời gian linh hoạt ==========
+
 function parseFlexibleDate(dateStr) {
   try {
     let cleanStr = dateStr.trim()
@@ -42,7 +40,6 @@ function parseFlexibleDate(dateStr) {
   }
 }
 
-// ======== Lắng nghe dữ liệu từ Firebase ==========
 onValue(dataRef, (snapshot) => {
   const data = snapshot.val();
   tableData = [];
@@ -56,7 +53,7 @@ onValue(dataRef, (snapshot) => {
       const lastUpdate = parseFlexibleDate(entry.time);
       const diffSeconds = (now - lastUpdate) / 1000;
 
-      // chỉ lấy máy hoạt động trong 30 giây gần nhất
+ 
       if (diffSeconds <= 60) {
         tableData.push({
           hostName: entry.hostName || "N/A",
@@ -71,7 +68,7 @@ onValue(dataRef, (snapshot) => {
   applyFilterAndDisplayTable();
 });
 
-// ======== Hiển thị bảng ==========
+
 function displayTable(data) {
   const tbody = document.querySelector("#data-table tbody");
   if (!tbody) return;
@@ -101,12 +98,11 @@ function displayTable(data) {
   setTimeout(() => (tbody.scrollTop = prevScroll), 0);
 }
 
-// ======== Copy IP ==========
+
 window.copyToClipboard = function (value) {
   navigator.clipboard.writeText(value);
 };
 
-// ======== Debounce Helper ==========
 function debounce(fn, wait) {
   let timeout;
   return function (...args) {
@@ -115,7 +111,6 @@ function debounce(fn, wait) {
   };
 }
 
-// ======== Hàm lọc và hiển thị ==========
 function applyFilterAndDisplayTable() {
   const ipText = currentIPFilter.toLowerCase().trim();
   const profileText = currentProfileFilter.toLowerCase().trim();
@@ -124,11 +119,10 @@ function applyFilterAndDisplayTable() {
     const ip = (d.IPAddress || "").toLowerCase();
     const profile = d.userProfile.split("\\").pop().toLowerCase();
 
-    // Lọc text
+ 
     const matchIP = !ipText || ip.includes(ipText);
     const matchProfile = !profileText || profile.includes(profileText);
 
-    // Lọc khu vực
     let matchRegion = true;
     switch (currentRegion) {
       case "cantho":
@@ -160,12 +154,9 @@ function applyFilterAndDisplayTable() {
 
   displayTable(filtered);
 }
-
-// ======== Dropdown lọc khu vực ==========
 window.locTheoKhuVuc = function (khuVuc) {
   currentRegion = khuVuc || "tatca";
 
-  // cập nhật label dropdown
   const btn = document.querySelector("#dropdownMenuButton");
   if (btn) {
     const labelMap = {
@@ -181,8 +172,6 @@ window.locTheoKhuVuc = function (khuVuc) {
 
   applyFilterAndDisplayTable();
 };
-
-// ======== Gắn sự kiện input filter ==========
 const ipInput = document.getElementById("filter-ip");
 const profileInput = document.getElementById("filter-profile");
 
