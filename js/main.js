@@ -57,7 +57,7 @@ onValue(dataRef, (snapshot) => {
       const diffSeconds = (now - lastUpdate) / 1000;
 
       // chỉ lấy máy hoạt động trong 30 giây gần nhất
-      if (diffSeconds <= 30) {
+      if (diffSeconds <= 60) {
         tableData.push({
           hostName: entry.hostName || "N/A",
           IPAddress: entry.IPAddress || "N/A",
